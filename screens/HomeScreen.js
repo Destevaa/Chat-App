@@ -1,35 +1,35 @@
-    
+
 import React from 'react';
-import {SafeAreaView, View, Text, AsyncStorage, FlatList, TouchableOpacity} from 'react-native';
+import { SafeAreaView, View, Text, AsyncStorage, FlatList, TouchableOpacity } from 'react-native';
 import User from '../User';
 import styles from '../constants/styles';
 import firebase from 'firebase';
 
 
-export default class HomeScreen extends React.Component{
+export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Chats'
   }
 
   state = {
-    users:[]
+    users: []
   }
 
-  componentDidMount(){
+  componentDidMount() {
     let dbRef = firebase.database().ref('users');
-    dbRef.on('child_added', (val)=>{
+    dbRef.on('child_added', (val) => {
       let person = val.val();
       person.phone = val.key;
-      if(person.phone===User.phone){
+      if (person.phone === User.phone) {
         User.name = person.name
-      }else{
-        this.setState((prevState)=> {
+      } else {
+        this.setState((prevState) => {
           return {
             users: [...prevState.users, person]
           }
         })
       }
-      
+
     })
   }
 
@@ -40,26 +40,26 @@ export default class HomeScreen extends React.Component{
 
 
 
-  renderRow = ({item}) => {
-    return(
-      <TouchableOpacity 
+  renderRow = ({ item }) => {
+    return (
+      <TouchableOpacity
 
-      onPress={() => this.props.navigation.navigate('Chat', item)}
-      style={{padding:10,borderBottomColor:'#ccc',borderBottomWidth:1}}>
-        <Text style={{fontSize:20}}>{item.name}</Text>
+        onPress={() => this.props.navigation.navigate('Chat', item)}
+        style={{ padding: 10, borderBottomColor: '#ccc', borderBottomWidth: 1 }}>
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
       </TouchableOpacity>
     )
   }
 
-    render(){
-        return(
-            <SafeAreaView>
-                <FlatList
-                data={this.state.users}
-                renderItem={this.renderRow}
-                keyExtractor={(item) => item.phone}
-                />
-            </SafeAreaView>
-        )
-    }
+  render() {
+    return (
+      <SafeAreaView>
+        <FlatList
+          data={this.state.users}
+          renderItem={this.renderRow}
+          keyExtractor={(item) => item.phone}
+        />
+      </SafeAreaView>
+    )
+  }
 }
